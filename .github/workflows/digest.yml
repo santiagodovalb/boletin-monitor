@@ -1,0 +1,31 @@
+name: Daily digest
+
+on:
+  schedule:
+    - cron: '0 11 * * 1-5' # 08:00 Buenos Aires, Mon–Fri. Holidays exit cleanly ("No notices").
+  workflow_dispatch: # manual run from the Actions tab
+
+permissions:
+  contents: write
+
+jobs:
+  digest:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      # ponytail: data/ cache isn't kept between runs, so a failed run re-pays in full on retry (a few cents).
+      - run: npm run monitor
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+      - name: Commit digest
+        run: |
+          git add digests
+          git diff --cached --quiet && exit 0
+          git -c user.name="github-actions[bot]" -c user.email="41898282+github-actions[bot]@users.noreply.github.com" \
+            commit -m "Digest $(TZ=America/Argentina/Buenos_Aires date +%F)"
+          git push

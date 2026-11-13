@@ -12,6 +12,16 @@ npm test                              # scraper parsing check
 
 Output: `digests/YYYY-MM-DD.md`. Scraped texts and summaries are cached in `data/` (gitignored), so re-running a date only pays for notices that are still missing.
 
+## Daily run
+
+`.github/workflows/digest.yml` runs the monitor every weekday at 08:00 Buenos Aires time and commits the new digest. It needs the API key as a repository secret:
+
+```bash
+gh secret set ANTHROPIC_API_KEY
+```
+
+Run it by hand from the Actions tab ("Daily digest" → "Run workflow").
+
 ## How it works
 
 1. `src/boletin.ts` scrapes the day's section page and each notice's full text.
