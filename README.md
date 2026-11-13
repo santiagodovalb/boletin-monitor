@@ -1,5 +1,7 @@
 # Boletín Oficial monitor
 
+**Live: https://boletin-monitor-nine.vercel.app**
+
 Daily digest of the Primera sección of Argentina's [Boletín Oficial](https://www.boletinoficial.gob.ar): every law, decree and resolution, summarized in plain Spanish and sorted by relevance with Claude.
 
 ```bash
