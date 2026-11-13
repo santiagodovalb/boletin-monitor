@@ -1,14 +1,10 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="29 9 142 142">
-  <!-- A page of the day's notices, each marked by relevance: orange high, amber medium, grey routine. -->
-  <rect x="40" y="10" width="120" height="140" rx="10" fill="#fffdf9" stroke="#e3ddd3" stroke-width="2"/>
-  <rect x="56" y="26" width="60" height="8" rx="4" fill="#1c1a17"/>
-  <rect x="56" y="40" width="34" height="5" rx="2.5" fill="#9b948a"/>
-  <circle cx="60" cy="64" r="5" fill="#e07a55"/>
-  <rect x="72" y="60" width="72" height="8" rx="4" fill="#e07a55" opacity="0.35"/>
-  <circle cx="60" cy="84" r="5" fill="#e3b44f"/>
-  <rect x="72" y="80" width="62" height="8" rx="4" fill="#e3b44f" opacity="0.4"/>
-  <circle cx="60" cy="104" r="5" fill="#e3b44f"/>
-  <rect x="72" y="100" width="68" height="8" rx="4" fill="#e3b44f" opacity="0.4"/>
-  <circle cx="60" cy="124" r="5" fill="#c8c2b8"/>
-  <rect x="72" y="120" width="56" height="8" rx="4" fill="#c8c2b8" opacity="0.6"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <!-- The portfolio's Boletín logo, simplified to read at tab size: notices marked high (orange), medium (amber), routine (grey). -->
+  <rect width="32" height="32" rx="7" fill="#1c1a17"/>
+  <circle cx="9" cy="9.5" r="3" fill="#e07a55"/>
+  <rect x="14" y="7.5" width="12" height="4" rx="2" fill="#e07a55"/>
+  <circle cx="9" cy="16" r="3" fill="#e3b44f"/>
+  <rect x="14" y="14" width="10" height="4" rx="2" fill="#e3b44f"/>
+  <circle cx="9" cy="22.5" r="3" fill="#9b948a"/>
+  <rect x="14" y="20.5" width="8" height="4" rx="2" fill="#9b948a"/>
 </svg>
