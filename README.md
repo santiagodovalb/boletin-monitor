@@ -10,7 +10,7 @@ npm run monitor                       # today, everything
 npm test                              # scraper parsing check
 ```
 
-Output: `digests/YYYY-MM-DD.md`. Scraped texts and summaries are cached in `data/` (gitignored), so re-running a date only pays for notices that are still missing.
+Output: `digests/YYYY-MM-DD.md`, plus `digests/YYYY-MM-DD.json` for the web viewer (`index.html`: stats, topic chart, filters and search). Preview it with `python3 -m http.server` and open http://localhost:8000. Scraped texts and summaries are cached in `data/` (gitignored), so re-running a date only pays for notices that are still missing.
 
 ## Daily run
 

@@ -8,7 +8,7 @@
 // Scraped text and summaries are cached in data/, so re-runs only pay for what's missing.
 import Anthropic from '@anthropic-ai/sdk';
 import { betaZodOutputFormat } from '@anthropic-ai/sdk/helpers/beta/zod';
-import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { z } from 'zod';
 import { fetchBody, fetchSection, type Aviso } from './boletin.ts';
 
@@ -148,4 +148,8 @@ if (failed.length) lines.push('## Sin resumir', '', ...failed.map((e) => `- [${e
 
 mkdirSync('digests', { recursive: true });
 writeFileSync(`digests/${date}.md`, lines.join('\n'));
+// Same digest as JSON for the web viewer (index.html), minus the full texts.
+writeFileSync(`digests/${date}.json`, JSON.stringify({ date, model: MODEL, entries: entries.map(({ texto, ...e }) => e) }, null, 1));
+const dates = readdirSync('digests').filter((f) => /^\d{4}-\d{2}-\d{2}\.json$/.test(f)).map((f) => f.slice(0, 10)).sort().reverse();
+writeFileSync('digests/index.json', JSON.stringify(dates));
 console.log(`Wrote digests/${date}.md (${done.length}/${entries.length} summarized${failed.length ? `, ${failed.length} failed` : ''}).`);

@@ -1,0 +1,235 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Boletín Oficial, en claro</title>
+<meta name="description" content="Resumen diario del Boletín Oficial de la República Argentina, en lenguaje simple y ordenado por relevancia.">
+<style>
+  :root {
+    color-scheme: light;
+    --bg: #fcfcfb; --surface: #ffffff; --line: #e6e5e0;
+    --text: #0b0b0b; --text-2: #52514e; --muted: #6f6e69;
+    --accent: #2a78d6; --accent-soft: #e8f1fc; --bar: #2a78d6; --bar-track: #f0efec;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      color-scheme: dark;
+      --bg: #141413; --surface: #1a1a19; --line: #2e2e2b;
+      --text: #f0efec; --text-2: #c3c2b7; --muted: #9a9990;
+      --accent: #6da7ec; --accent-soft: #1d2a3a; --bar: #3987e5; --bar-track: #262624;
+    }
+  }
+  :root[data-theme="dark"] {
+    color-scheme: dark;
+    --bg: #141413; --surface: #1a1a19; --line: #2e2e2b;
+    --text: #f0efec; --text-2: #c3c2b7; --muted: #9a9990;
+    --accent: #6da7ec; --accent-soft: #1d2a3a; --bar: #3987e5; --bar-track: #262624;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--text); font: 16px/1.55 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+  main { max-width: 960px; margin: 0 auto; padding: 32px 16px 64px; }
+  a { color: var(--accent); }
+  header { display: flex; flex-wrap: wrap; gap: 16px; align-items: end; justify-content: space-between; margin-bottom: 24px; }
+  h1 { font-size: 28px; line-height: 1.2; margin: 0 0 4px; letter-spacing: -0.01em; }
+  .sub { color: var(--text-2); margin: 0; }
+  select, input[type=search] { font: inherit; color: var(--text); background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 8px 10px; }
+  .card { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 20px; }
+  .tiles { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 16px; }
+  .tile .n { font-size: 32px; font-weight: 650; line-height: 1.1; font-variant-numeric: tabular-nums; }
+  .tile .l { color: var(--text-2); font-size: 14px; }
+  h2 { font-size: 16px; margin: 0 0 4px; }
+  .hint { color: var(--muted); font-size: 13px; margin: 0 0 14px; }
+  .chart { position: relative; display: grid; gap: 2px; }
+  .row { display: grid; grid-template-columns: minmax(120px, 220px) 1fr; gap: 12px; align-items: center; padding: 3px 4px; border-radius: 6px; cursor: pointer; background: none; border: 0; color: inherit; font: inherit; text-align: left; width: 100%; }
+  .row:hover, .row:focus-visible { background: var(--bar-track); outline: none; }
+  .row.on { background: var(--accent-soft); }
+  .row .lab { font-size: 14px; color: var(--text-2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .row .track { height: 14px; }
+  .row .bar { height: 100%; background: var(--bar); border-radius: 0 4px 4px 0; min-width: 2px; }
+  .tip { position: fixed; pointer-events: none; background: var(--text); color: var(--bg); font-size: 13px; padding: 6px 10px; border-radius: 6px; white-space: nowrap; opacity: 0; transition: opacity .1s; z-index: 10; }
+  .filters { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin: 28px 0 16px; }
+  .filters input[type=search] { flex: 1 1 200px; }
+  .chip { font: inherit; font-size: 14px; color: var(--text-2); background: var(--surface); border: 1px solid var(--line); border-radius: 999px; padding: 6px 14px; cursor: pointer; }
+  .chip[aria-pressed=true] { background: var(--text); color: var(--bg); border-color: var(--text); }
+  .clear { font: inherit; font-size: 14px; background: none; border: 0; color: var(--accent); cursor: pointer; padding: 6px; }
+  section h3 { font-size: 13px; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); margin: 28px 0 10px; }
+  .item { margin-bottom: 10px; }
+  .item .top { display: flex; flex-wrap: wrap; gap: 6px 10px; align-items: baseline; margin-bottom: 6px; }
+  .item .norma { font-weight: 650; }
+  .item .org { color: var(--text-2); font-size: 14px; }
+  .item p { margin: 0 0 8px; }
+  .meta { display: flex; flex-wrap: wrap; gap: 6px; font-size: 13px; color: var(--text-2); }
+  .tag { border: 1px solid var(--line); border-radius: 999px; padding: 1px 10px; }
+  .why { font-size: 14px; color: var(--muted); font-style: italic; }
+  .rel { font-size: 12px; font-weight: 650; text-transform: uppercase; letter-spacing: .05em; padding: 1px 8px; border-radius: 4px; border: 1px solid var(--line); color: var(--text-2); }
+  .rel.alta { background: var(--text); color: var(--bg); border-color: var(--text); }
+  details.item summary { cursor: pointer; list-style: none; }
+  details.item summary::-webkit-details-marker { display: none; }
+  .empty { color: var(--muted); padding: 24px 0; }
+  footer { margin-top: 48px; padding-top: 16px; border-top: 1px solid var(--line); color: var(--muted); font-size: 14px; }
+  @media (max-width: 640px) {
+    .tiles { grid-template-columns: repeat(2, 1fr); }
+    .row { grid-template-columns: 150px 1fr; }
+    h1 { font-size: 24px; }
+  }
+</style>
+</head>
+<body>
+<main>
+  <header>
+    <div>
+      <h1>Boletín Oficial, en claro</h1>
+      <p class="sub" id="sub">Cargando…</p>
+    </div>
+    <label>Fecha <select id="date" aria-label="Fecha del boletín"></select></label>
+  </header>
+
+  <div class="tiles" id="tiles"></div>
+
+  <div class="card">
+    <h2>Normas por tema</h2>
+    <p class="hint">Tocá un tema para filtrar la lista.</p>
+    <div class="chart" id="chart" role="list"></div>
+  </div>
+
+  <div class="filters">
+    <button class="chip" data-rel="alta" aria-pressed="false">Alta</button>
+    <button class="chip" data-rel="media" aria-pressed="false">Media</button>
+    <button class="chip" data-rel="baja" aria-pressed="false">Rutina</button>
+    <input type="search" id="q" placeholder="Buscar: organismo, norma, a quién afecta…" aria-label="Buscar">
+    <button class="clear" id="clear" hidden>Limpiar filtros</button>
+  </div>
+
+  <div id="list"></div>
+
+  <footer>
+    Resúmenes generados por IA (<span id="model">Claude</span>) a partir de la Primera sección del
+    <a href="https://www.boletinoficial.gob.ar">Boletín Oficial</a>. Pueden tener errores: cada norma enlaza a su texto oficial.
+    · <a href="https://github.com/santiagodovalb/boletin-monitor">Código en GitHub</a>
+  </footer>
+</main>
+<div class="tip" id="tip" role="tooltip"></div>
+
+<script>
+const $ = (id) => document.getElementById(id);
+const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
+const REL = { alta: 'Lo más relevante', media: 'Relevancia media', baja: 'De rutina' };
+let data, filter = { rel: null, tema: null, q: '' };
+
+const fmtDate = (d) => new Date(`${d}T12:00:00`).toLocaleDateString('es-AR', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+
+async function load(date) {
+  data = await (await fetch(`digests/${date}.json`)).json();
+  data.done = data.entries.filter((e) => e.summary);
+  filter = { rel: null, tema: null, q: '' };
+  $('q').value = '';
+  $('sub').textContent = `${fmtDate(date)} · ${data.entries.length} normas en la Primera sección`;
+  $('model').textContent = data.model;
+  history.replaceState(null, '', `?d=${date}`);
+  renderStatic();
+  render();
+}
+
+function renderStatic() {
+  const n = (r) => data.done.filter((e) => e.summary.relevancia === r).length;
+  $('tiles').innerHTML = [
+    [data.entries.length, 'normas publicadas'],
+    [n('alta'), 'de relevancia alta'],
+    [n('media'), 'de relevancia media'],
+    [n('baja'), 'de rutina'],
+  ].map(([v, l]) => `<div class="card tile"><div class="n">${v}</div><div class="l">${l}</div></div>`).join('');
+
+  const counts = {};
+  for (const e of data.done) counts[e.summary.tema] = (counts[e.summary.tema] || 0) + 1;
+  const rows = Object.entries(counts).sort((a, b) => b[1] - a[1]);
+  const max = rows[0]?.[1] || 1;
+  $('chart').innerHTML = rows.map(([t, c]) =>
+    `<button class="row" role="listitem" data-tema="${esc(t)}" data-n="${c}" aria-label="${esc(t)}: ${c} normas">
+      <span class="lab">${esc(t)}</span>
+      <span class="track"><span class="bar" style="display:block;width:${(c / max) * 100}%"></span></span>
+    </button>`).join('');
+}
+
+function render() {
+  const q = filter.q.toLowerCase();
+  const shown = data.done.filter((e) =>
+    (!filter.rel || e.summary.relevancia === filter.rel) &&
+    (!filter.tema || e.summary.tema === filter.tema) &&
+    (!q || [e.norma, e.organismo, e.sumario, e.summary.resumen, e.summary.afecta_a].join(' ').toLowerCase().includes(q)));
+
+  document.querySelectorAll('.chip').forEach((b) => b.setAttribute('aria-pressed', b.dataset.rel === filter.rel));
+  document.querySelectorAll('.row').forEach((r) => r.classList.toggle('on', r.dataset.tema === filter.tema));
+  $('clear').hidden = !(filter.rel || filter.tema || filter.q);
+
+  const failed = data.entries.filter((e) => !e.summary);
+  let html = '';
+  for (const r of ['alta', 'media', 'baja']) {
+    const items = shown.filter((e) => e.summary.relevancia === r);
+    if (!items.length) continue;
+    html += `<section><h3>${REL[r]} · ${items.length}</h3>${items.map(r === 'baja' ? itemShort : itemFull).join('')}</section>`;
+  }
+  if (!html) html = '<p class="empty">Ninguna norma coincide con los filtros.</p>';
+  if (failed.length && !filter.rel && !filter.tema && !q)
+    html += `<section><h3>Sin resumir · ${failed.length}</h3>${failed.map((e) => `<div class="card item"><a href="${esc(e.url)}">${esc(e.norma)}</a> <span class="org">${esc(e.organismo)}</span></div>`).join('')}</section>`;
+  $('list').innerHTML = html;
+}
+
+const tags = (s) => `<div class="meta"><span class="tag">${esc(s.tema)}</span><span class="tag">${esc(s.tipo)}</span></div>`;
+const itemFull = (e) => `<article class="card item">
+  <div class="top"><span class="rel ${e.summary.relevancia}">${e.summary.relevancia}</span><span class="norma">${esc(e.norma)}</span><span class="org">${esc(e.organismo)}</span></div>
+  <p>${esc(e.summary.resumen)}</p>
+  <p><strong>Afecta a:</strong> ${esc(e.summary.afecta_a)}</p>
+  <p class="why">${esc(e.summary.por_que)}</p>
+  ${tags(e.summary)}
+  <p style="margin:10px 0 0"><a href="${esc(e.url)}" target="_blank" rel="noopener">Ver texto oficial →</a></p>
+</article>`;
+const itemShort = (e) => `<details class="card item">
+  <summary><div class="top" style="margin:0"><span class="norma">${esc(e.norma)}</span><span class="org">${esc(e.organismo)}</span></div>
+  <p style="margin:6px 0 0">${esc(e.summary.resumen)}</p></summary>
+  <p style="margin-top:8px"><strong>Afecta a:</strong> ${esc(e.summary.afecta_a)}</p>
+  ${tags(e.summary)}
+  <p style="margin:10px 0 0"><a href="${esc(e.url)}" target="_blank" rel="noopener">Ver texto oficial →</a></p>
+</details>`;
+
+// Chart: hover tooltip + click to filter by topic.
+const tip = $('tip');
+$('chart').addEventListener('mousemove', (ev) => {
+  const row = ev.target.closest('.row');
+  if (!row) return (tip.style.opacity = 0);
+  const n = +row.dataset.n;
+  tip.textContent = `${row.dataset.tema}: ${n} ${n === 1 ? 'norma' : 'normas'}`;
+  tip.style.left = `${Math.min(ev.clientX + 12, innerWidth - tip.offsetWidth - 8)}px`;
+  tip.style.top = `${ev.clientY + 14}px`;
+  tip.style.opacity = 1;
+});
+$('chart').addEventListener('mouseleave', () => (tip.style.opacity = 0));
+$('chart').addEventListener('click', (ev) => {
+  const row = ev.target.closest('.row');
+  if (!row) return;
+  filter.tema = filter.tema === row.dataset.tema ? null : row.dataset.tema;
+  render();
+});
+document.querySelectorAll('.chip').forEach((b) => b.addEventListener('click', () => {
+  filter.rel = filter.rel === b.dataset.rel ? null : b.dataset.rel;
+  render();
+}));
+$('q').addEventListener('input', (e) => { filter.q = e.target.value; render(); });
+$('clear').addEventListener('click', () => { filter = { rel: null, tema: null, q: '' }; $('q').value = ''; render(); });
+$('date').addEventListener('change', (e) => load(e.target.value));
+
+(async () => {
+  try {
+    const dates = await (await fetch('digests/index.json')).json();
+    $('date').innerHTML = dates.map((d) => `<option value="${d}">${d}</option>`).join('');
+    const want = new URLSearchParams(location.search).get('d');
+    const d = dates.includes(want) ? want : dates[0];
+    $('date').value = d;
+    await load(d);
+  } catch {
+    $('sub').textContent = 'No se pudieron cargar los resúmenes.';
+  }
+})();
+</script>
+</body>
+</html>
